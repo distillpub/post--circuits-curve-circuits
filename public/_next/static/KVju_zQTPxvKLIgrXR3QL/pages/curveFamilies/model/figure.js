@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[26],{Qetd:function(e,n,t){"use strict";var i=Object.assign.bind(Object);e.exports=i,e.exports.default=e.exports},tyMa:function(e,n,t){(window.__NEXT_P=window.__NEXT_P||[]).push(["/curveFamilies/model/figure",function(){return t("Es/S")}])}},[["tyMa",0,1,6]]]);

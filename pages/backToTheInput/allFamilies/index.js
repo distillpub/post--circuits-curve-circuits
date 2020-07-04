@@ -33,14 +33,19 @@ const colors = {
 
 const maxStrokeWidth = 10
 
-const familyWidth = 190
-const familyHeight = 40
+const familyWidth = 180
+const familyHeight = 44
 const Family = ({ layerIndex, name, units }) => (
   <Surface
     id={layerNames[layerIndex] + '-' + name.replace(/ /g, '_')}
-    height={40}
+    height={familyHeight}
+    borderRadius={5}
+    justifyContent="space-between"
     marginY={3}
-    border={`${Math.floor(1 + units.length / 5)}px solid rgba(0, 0, 0, 0.2)`}
+    transform="translateY(-5px)"
+    border={`1px solid rgba(0, 0, 0, 0.2)`}
+    padding={5}
+    paddingX={10}
     borderRadius={3}
     background="white"
     width={familyWidth}
@@ -64,26 +69,32 @@ const Family = ({ layerIndex, name, units }) => (
     flexFlow="row"
     alignItems="center"
   >
-    <Surface position="relative" width={32} height={32}>
-      {range(3).map((i) => (
-        <img
-          width={28}
-          src={featureVis('inceptionv1', layerNames[layerIndex], units[i])}
-          style={{
-            borderRadius: 3,
-            border: '1px solid rgba(0, 0, 0, 0.7)',
-            zIndex: 10 - i,
-            opacity: i === 0 ? 1 : 0.3,
-            position: 'absolute',
-            left: i * 2,
-            top: i * 2,
-          }}
-        />
-      ))}
+    <Surface flexFlow="row" alignItems="center">
+      <Surface position="relative" width={32} height={32}>
+        {range(Math.min(3, units.length)).map((i) => (
+          <img
+            width={28}
+            src={featureVis('inceptionv1', layerNames[layerIndex], units[i])}
+            style={{
+              borderRadius: 3,
+              border: '1px solid rgba(0, 0, 0, 0.7)',
+              zIndex: 10 - i,
+              opacity: i === 0 ? 1 : 0.3,
+              position: 'absolute',
+              left: i * 2,
+              top: i * 2,
+            }}
+          />
+        ))}
+      </Surface>
+      <Text
+        fontSize={name.length > 12 ? 13 : 15}
+        marginLeft={5}
+        fontWeight={600}
+      >
+        {name.slice(0, 15)}
+      </Text>
     </Surface>
-    <Text fontSize={10} marginLeft={5} fontWeight={600}>
-      {name.slice(0, 15)}
-    </Text>
     <Text opacity={0.6} marginLeft={3}>
       {units.length}
     </Text>
@@ -153,7 +164,7 @@ export default cofab(
           const id = el.getAttribute('id')
 
           if (id.indexOf(':') === -1) return null
-          const x = +el.getAttribute('x')
+          const x = +el.getAttribute('x') + 5 // add padding
           const y = +el.getAttribute('y')
           const [layer, name] = id.split(':')
 
@@ -375,7 +386,7 @@ export default cofab(
                 <path
                   classname={sign}
                   d={path}
-                  strokeWidth={weight}
+                  strokeWidth={Math.pow(weight / 3, 2)}
                   // strokeWidth={3}
                   opacity={Math.pow(weight / maxStrokeWidth, 2)}
                   stroke={colors[color]}
@@ -433,28 +444,6 @@ export default cofab(
 
       return (
         <Surface margin={10} key={Math.random()}>
-          {false && (
-            <Surface flexFlow="row" marginBottom={10}>
-              <Button color={null}>All</Button>
-              <Button color="texture">Texture</Button>
-              <Button color="shape">Shape</Button>
-            </Surface>
-          )}
-          <button
-            onClick={() => this.setState({ connectionsVar: 'connections' })}
-          >
-            total by family
-          </button>
-          <button
-            onClick={() =>
-              this.setState({ connectionsVar: 'connectionsPerNeuron' })
-            }
-          >
-            by neuron
-          </button>
-          <button onClick={() => this.setState({ connectionsVar: 'diff' })}>
-            diff
-          </button>
           <Surface id="circuit-container">
             <Surface position="relative" id="svgHolder" />
             <FigmaSource />

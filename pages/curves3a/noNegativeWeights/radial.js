@@ -1,11 +1,12 @@
 import React from 'react'
 import { lineRadial, curveNatural } from 'd3-shape'
-import { Surface, Text } from 'components/ui'
+import { Surface, Text, ZoomedImg } from 'components/ui'
 import { max, debounce, flatten } from 'lodash'
 import { featureVis } from 'components/helpers'
 
 const toRadians = (deg) => deg * (Math.PI / 180)
 const toDegrees = (radians) => radians * (180 / Math.PI)
+const isServer = () => typeof window === `undefined`
 
 const circularMean = (angles) => {
   let x = 0
@@ -34,22 +35,26 @@ export default class RadialTuningCurve extends React.Component {
   )
 
   render() {
+    if (isServer() && !this.props.prerender) return null
+
     const { activeNeuron } = this.state
 
     const {
       layer,
-      neurons,
+      neurons = [],
       responsesByNeuron,
       fillOpacity = 0.85,
       neuronPadding = 5,
       size,
       model = 'inceptionv1',
       orientationType = 'max',
+      fixedMax = null,
       neuronSize = 60,
     } = this.props
 
     const getOrientation = (neuron) => {
       const weights = responsesByNeuron[neuron]
+
       if (orientationType === 'max') {
         const val = weights.indexOf(max(weights)) / 2
         return val
@@ -84,24 +89,43 @@ export default class RadialTuningCurve extends React.Component {
       )
       */
 
-      let line = responsesByNeuron[neuron].map((value, index) => [
-        toRadians(index / 2) - Math.PI / 2,
+      const line = responsesByNeuron[neuron].map((value, index) => [
+        toRadians(index / 2) + Math.PI / 2,
         innerCircleRadius +
-          Math.pow(value / (this.props.maxValue || maxValue), 1) * radius * 1,
+          Math.pow(value / (this.props.fixedMax || maxValue), 1) * radius * 1,
       ])
-
-      line = [...line, ...line.map(([val1, val2]) => [val1 + Math.PI, val2])]
 
       // close path
       line.push(line[0])
 
       const stroke = `hsl(${orientations[neuron]}, 96%, 30%)`
       const fill = `hsla(${orientations[neuron]}, 66%, 60%, ${fillOpacity})`
+      const finalPath = lineRadial().curve(curveNatural)(line)
+      const isFloat = (value) =>
+        !isNaN(value) && value.toString().indexOf('.') != -1
+
+      const rounded = isServer()
+        ? finalPath
+
+            .split(',')
+            .map((part) => {
+              if (part.indexOf('C') > -1) {
+                const [s0, s1] = part.split('C')
+                return (+s0).toFixed(1) + 'C' + (+s1).toFixed(1)
+              }
+
+              if (isFloat(part)) {
+                return (+part).toFixed(1)
+              }
+              return part
+            })
+            .join(',')
+        : finalPath
 
       return (
         <path
           key={neuron}
-          d={lineRadial().curve(curveNatural)(line)}
+          d={rounded}
           fill={fill}
           onMouseEnter={() => this.onHighlightNeuron(neuron)}
           onMouseLeave={() => this.onHighlightNeuron(null)}
@@ -122,6 +146,8 @@ export default class RadialTuningCurve extends React.Component {
       <div
         key={1}
         style={{
+          marginTop: 30,
+          marginBottom: 30,
           width: size,
           height: size,
           position: 'relative',
@@ -136,7 +162,6 @@ export default class RadialTuningCurve extends React.Component {
           style={{
             // padding: 0,
             // margin: 0,
-            transform: 'scaleX(-1)',
             position: 'absolute',
             zIndex: 10,
             // top: -centerSize / 2,
@@ -157,6 +182,48 @@ export default class RadialTuningCurve extends React.Component {
             top: size / 2 - innerCircleRadius,
           }}
         />
+        {neurons.map((neuron) => {
+          return (
+            <Surface
+              position="absolute"
+              key={neuron}
+              left={
+                size / 2 +
+                Math.cos(toRadians(orientations[neuron])) * neuronRadius -
+                neuronSize / 2
+              }
+              top={
+                size / 2 +
+                Math.sin(toRadians(orientations[neuron])) * neuronRadius -
+                neuronSize / 2
+              }
+              zIndex={10}
+            >
+              <a
+                href={`https://microscope.openai.com/models/inceptionv1/${layer}_0/${neuron}`}
+                style={{ borderBottom: 'none' }}
+                target="_blank"
+              >
+                <img
+                  src={featureVis(model, layer, neuron)}
+                  width={neuronSize}
+                  onMouseEnter={() => this.onHighlightNeuron(neuron)}
+                  onMouseLeave={() => this.onHighlightNeuron(null)}
+                  style={{
+                    borderRadius: neuronSize,
+                    opacity: activeNeuron
+                      ? activeNeuron === neuron
+                        ? 1
+                        : 0.2
+                      : 1,
+                    border: `3px solid ${`hsla(${orientations[neuron]}, 96%, 30%, 0.4)`}`,
+                    transition: '700ms ease-out all',
+                  }}
+                />
+              </a>
+            </Surface>
+          )
+        })}
         <div
           style={{
             position: 'absolute',
@@ -173,47 +240,13 @@ export default class RadialTuningCurve extends React.Component {
             position: 'absolute',
             top: 0,
             bottom: 0,
+            background: 'rgba(0, 0, 0, 0.1)',
             borderRight: '1px dashed rgba(0, 0, 0, 0.3)',
             width: 1,
             left: size / 2 - 1,
             zIndex: 5,
           }}
         />
-        {neurons.map((neuron) => {
-          return (
-            <Surface
-              position="absolute"
-              left={
-                size / 2 +
-                Math.cos(toRadians(orientations[neuron])) * neuronRadius -
-                neuronSize / 2
-              }
-              top={
-                size / 2 -
-                Math.sin(toRadians(orientations[neuron])) * neuronRadius -
-                neuronSize / 2
-              }
-              zIndex={10}
-            >
-              <img
-                src={featureVis(model, layer, neuron)}
-                width={neuronSize}
-                onMouseEnter={() => this.onHighlightNeuron(neuron)}
-                onMouseLeave={() => this.onHighlightNeuron(null)}
-                style={{
-                  borderRadius: neuronSize,
-                  opacity: activeNeuron
-                    ? activeNeuron === neuron
-                      ? 1
-                      : 0.2
-                    : 1,
-                  border: `3px solid ${`hsla(${orientations[neuron]}, 96%, 30%, 0.4)`}`,
-                  transition: '700ms ease-out all',
-                }}
-              />
-            </Surface>
-          )
-        })}
       </div>
     )
   }

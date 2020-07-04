@@ -1,5 +1,5 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document'
-// import Banner from './banner'
+import Banner from './banner'
 import styles from './styles'
 
 class MyDocument extends Document {
@@ -37,7 +37,9 @@ class MyDocument extends Document {
               dangerouslySetInnerHTML={{ __html: JSON.stringify(byline) }}
             ></script>
           </d-front-matter>
-          <d-title class="show-in-index">{false && <Banner />}</d-title>
+          <d-title class="show-in-index">
+            <Banner />
+          </d-title>
           <d-byline class="show-in-index"></d-byline>
           <Main />
           <NextScript />

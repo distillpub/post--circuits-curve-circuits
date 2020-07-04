@@ -7,14 +7,14 @@ const neuronSize = 703 / 13
 export default cofab(
   class Texture extends React.Component {
     state = { direction: null }
+
     render() {
       const { grid, neurons, directionImages, directions } = this.props
       const { direction } = this.state
 
       return (
-        <Surface width={703}>
+        <Surface width={703} marginY={20}>
           <Text
-            marginTop={20}
             marginLeft={3}
             width={'100%'}
             paddingBottom={3}

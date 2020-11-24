@@ -1,5 +1,6 @@
 import fetchGradients from 'components/fetchGradients'
 import Tiles from 'components/tiles'
+import Figure from 'components/figure'
 import { Spinner } from 'evergreen-ui'
 import { scaleLinear } from 'd3-scale'
 import React from 'react'
@@ -99,23 +100,35 @@ export default class SimilarOpposing extends React.Component {
     )
 
     return (
-      <Surface alignItems="center" marginY={40}>
-        <Surface flexFlow="row">
+      <Figure>
+        <Surface flexFlow="row" alignSelf="center">
           <Surface>
-            <Text alignSelf="center" textAlign="center" size={600} width={370}>
-              Curve detectors are excited by earlier detectors in{' '}
-              <b>similar orientations</b>
-            </Text>
+            <div
+              style={{
+                width: 450,
+                marginLeft: 55,
+                fontSize: 15,
+                marginBottom: -20,
+              }}
+            >
+              Curves are excited by early curves in <b>similar orientations</b>
+            </div>
             {row(147, 379)}
             {row(81, 385)}
             {row(71, 340)}
             {row(145, 388)}
           </Surface>
           <Surface>
-            <Text alignSelf="center" textAlign="center" size={600} width={330}>
-              They are inhibited by earlier detectors in{' '}
-              <b>opposing orientations</b>
-            </Text>
+            <div
+              style={{
+                width: 450,
+                marginLeft: 55,
+                fontSize: 15,
+                marginBottom: -20,
+              }}
+            >
+              ...and inhibited by early curves in <b>opposing orientations</b>
+            </div>
             {row(145, 379)}
 
             {row(71, 385)}
@@ -123,7 +136,12 @@ export default class SimilarOpposing extends React.Component {
             {row(147, 388)}
           </Surface>
         </Surface>
-      </Surface>
+        <figcaption style={{ width: 704, alignSelf: 'center', marginTop: 10 }}>
+          There are a couple other subtle things you can find if you look
+          closely. For example, you can see that the weights shift slightly over
+          the course of the curve, to track the change in local curvature.
+        </figcaption>
+      </Figure>
     )
   }
 }

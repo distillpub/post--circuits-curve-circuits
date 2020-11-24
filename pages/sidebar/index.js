@@ -39,13 +39,12 @@ export default () => (
   >
     <nav>
       <h3>Contents</h3>
-      <Row>Introduction</Row>
-      <Row>Three Families</Row>
-      <Row>The Curve Family</Row>
-      <Row>The Line Family</Row>
-      <Row>The Texture Family</Row>
-      <Row>Back to the Input</Row>
-      <Row>An Artificial Artificial Neural Network</Row>
+      <Row>Overview of the Curve Detector Algorithm</Row>
+      <Row>3a Early Curve Family</Row>
+      <Row>Aside: Equivariance</Row>
+      <Row>Cosmetic Invariance</Row>
+      <Row>Artificial Artificial Neural Network</Row>
+      <Row>Downstream</Row>
       <Row>Conclusion</Row>
     </nav>
   </Surface>

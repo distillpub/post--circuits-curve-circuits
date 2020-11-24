@@ -8,6 +8,10 @@ import { scaleLinear } from 'd3-scale'
 import { range } from 'lodash'
 import { Icon, Spinner } from 'evergreen-ui'
 
+export const getInitialProps = () => {
+  return {}
+}
+
 export default class CurveTiles extends React.Component {
   state = { weights: null }
 
@@ -61,6 +65,13 @@ export default class CurveTiles extends React.Component {
             </Surface>
           ))}
         </Surface>
+        <figcaption style={{ width: 704, alignSelf: 'center', marginTop: 20 }}>
+          The weights connecting 3a early curves with 3b:379 implement
+          rotational equivariance. It turns out there are curves of curves
+          literally inscribed in the weights of neural networks. We’ll discuss
+          equivariance later in this paper, and likely again in the Circuits
+          thread in a dedicated paper.
+        </figcaption>
       </Figure>
     )
   }

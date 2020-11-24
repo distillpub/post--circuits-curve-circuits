@@ -129,5 +129,9 @@ export default () => (
         neurons={[406, 385, 343, 342, 388, 324, 340, 330, 349, 379]}
       />
     </Surface>
+    <figcaption style={{ alignSelf: 'center', width: 704, marginTop: 5 }}>
+      The weights connecting conv2d2 lines and 3b curves implement rotational
+      equivariance.
+    </figcaption>
   </Surface>
 )

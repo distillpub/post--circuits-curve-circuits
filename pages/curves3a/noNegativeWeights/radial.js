@@ -70,11 +70,14 @@ export default class RadialTuningCurve extends React.Component {
       return mean
     }
 
-    const orientations = neurons.reduce(
-      (acc, neuron) => ({ ...acc, [neuron]: getOrientation(neuron) }),
-      {}
-    )
+    const orientations =
+      this.props.orientations ||
+      neurons.reduce(
+        (acc, neuron) => ({ ...acc, [neuron]: getOrientation(neuron) }),
+        {}
+      )
 
+    console.log('name', this.props.name, 'my orientations are', orientations)
     const maxValue = max(
       flatten(neurons.map((neuron) => responsesByNeuron[neuron]))
     )

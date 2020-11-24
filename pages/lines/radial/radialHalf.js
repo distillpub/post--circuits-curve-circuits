@@ -34,6 +34,8 @@ export default class RadialTuningCurve extends React.Component {
   )
 
   render() {
+    if (typeof window === 'undefined') return null
+
     const { activeNeuron } = this.state
 
     const {

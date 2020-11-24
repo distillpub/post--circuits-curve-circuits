@@ -23,6 +23,10 @@ const line = (
   </svg>
 )
 
+export const getInitialProps = () => {
+  return {}
+}
+
 export default class CurveWeights2 extends React.Component {
   state = { weights: null }
 
@@ -83,7 +87,7 @@ export default class CurveWeights2 extends React.Component {
     )
 
     const Annotate = ({ children, x, y, size = 40 }) => (
-      <Surface position="relative">
+      <Surface position="relative" marginTop={-20} marginBottom={20}>
         <Surface
           width={size}
           borderRadius={size}
@@ -99,19 +103,13 @@ export default class CurveWeights2 extends React.Component {
     )
 
     return (
-      <Surface gridColumn="screen" alignItems="center" marginBottom={20}>
-        <Surface alignItems="center">
-          <Surface flexFlow="row">
-            <Surface>
-              <Annotate x={190} y={42}>
-                {row(147, 379)}
-              </Annotate>
-            </Surface>
-            <Annotate x={244} y={41}>
-              {row(71, 340)}
-            </Annotate>
-          </Surface>
-        </Surface>
+      <Surface gridColumn="screen" justifyContent="center" flexFlow="row">
+        <Annotate x={190} y={42}>
+          {row(147, 379)}
+        </Annotate>
+        <Annotate x={244} y={41}>
+          {row(71, 340)}
+        </Annotate>
       </Surface>
     )
   }

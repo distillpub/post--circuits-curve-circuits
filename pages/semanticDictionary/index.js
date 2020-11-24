@@ -49,7 +49,7 @@ const families = {
       icon: featureVis('InceptionV1', 'conv2d1', 29),
       href:
         'https://distill.pub/2020/circuits/early-vision/#group_conv2d1_low_frequency',
-      percentage: 29,
+      percentage: 19,
     },
   ],
   conv2d2: [
@@ -219,5 +219,15 @@ export default () => (
         </Surface>
       ))}
     </Surface>
+    <figcaption style={{ alignSelf: 'center', width: 704, marginTop: 10 }}>
+      By breaking down the highest magnitude spatial position in each layer into
+      neuron families, we can see which shapes from each layer are most
+      important in curve detection. This is similar to a semantic dictionary
+      interface in{' '}
+      <a href="https://distill.pub/2018/building-blocks/">
+        The Building Blocks of Interpretability
+      </a>
+      .
+    </figcaption>
   </Figure>
 )

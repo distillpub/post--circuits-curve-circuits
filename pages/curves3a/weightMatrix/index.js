@@ -8,6 +8,9 @@ import { Spinner } from 'evergreen-ui'
 import Tiles from 'components/tiles'
 import { scaleLinear } from 'd3-scale'
 
+export const getInitialProps = () => {
+  return {}
+}
 class CurveTiles extends React.Component {
   state = { weights: null }
 

@@ -122,20 +122,24 @@ class npyjs {
 
 const npy = new npyjs()
 
-if (typeof window !== 'undefined' && typeof gradientsCache === 'undefined') {
+if (typeof window !== 'undefined') {
   window.gradientsCache = {}
 }
 
 export default async (modelName, layer1, layer2) => {
   const key = `${modelName}_${layer1}_${layer2}`
 
-  if (gradientsCache[key]) {
+  if (
+    typeof window !== 'undefined' &&
+    window['gradientsCache'] &&
+    gradientsCache[key]
+  ) {
     return await gradientsCache[key]
   }
 
   const file = `https://storage.googleapis.com/fls/nickc/circuit_gradients/${key}.npy`
 
-  gradientsCache[key] = new Promise((resolve) => {
+  const promise = new Promise((resolve) => {
     npy.load(file, ({ data, shape }) => {
       const reshaped = nj
         .array(data, 'int8')
@@ -145,5 +149,9 @@ export default async (modelName, layer1, layer2) => {
     })
   })
 
-  return gradientsCache[key]
+  if (typeof window !== 'undefined') {
+    gradientsCache[key] = promise
+  }
+
+  return promise
 }

@@ -23,8 +23,5 @@ export default () => (
     <a className="prev" href="/2020/circuits/curve-detectors/">
       Curve Detectors
     </a>
-    <a className="next" style={{ opacity: 0.6 }}>
-      Universal Curves (soon)
-    </a>
   </section>
 )

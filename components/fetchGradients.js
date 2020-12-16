@@ -1,4 +1,4 @@
-import nj from 'numjs'
+// import nj from 'numjs'
 
 class npyjs {
   constructor(opts) {

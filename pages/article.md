@@ -1,4 +1,6 @@
 
+import './init'
+
 import Neuron from 'components/neuron'
 
 import H2 from 'components/h2'
@@ -19,28 +21,27 @@ import PrevNext from 'components/prevNext'
 
 <PrevNext />
 
-<Todo to="Nick" value={7}>Make sure table of contents works</Todo>
+Many approaches to interpretability give high level explanations, but it's hard to know if they're true. Circuits takes the opposite approach: building up from individual neurons and individual weights to easily verifiable explanations of tiny slices of neural networks. But it faces a different question: can we ever hope to understand a full neural network this way?
 
-<Todo to="Nick" value={7}>Ask Chris what we should put for Ludwig’s affiliation</Todo>
+This paper uses the Circuits approach to reverse-engineer curve detectors, a neuron family we studied in a previous article. We find that although curve detection involves more than 50,000 parameters, they actually implement a simple algorithm that can be read off the weights and described in just a few English sentences. Based on this understanding, we re-implement curve detectors by hand, writing out weights to create an _artificial_ artificial neural network that mimics curve detectors.
 
-<Todo to="Nick" value={6}>Author contribution statement & Acknowledgements</Todo>
+The reason the curve circuit is relatively simple is because of the [equivariance motif](http://v). Rotational equivariance reduces the complexity by a factor of 10-20x while scale equivariance reduces it by an additional 2-3x, for a total reduction of ~50x<d-footnote>A small portion involving the interactions of color-contrast detectors with line detectors is further reduced by a factor of ~8x due to hue equivariance, but doesn't significantly reduce the complexity of the overall circuit.</d-footnote>. We find this an exciting example of how motifs can dramatically simplify circuits. In this circuit the main motif is equivariance, but in others different motifs may be more important.
 
-The core hypothesis of circuits is that neural networks have human understandable algorithms written into their weights. In [Zoom In](https://distill.pub/2020/circuits/zoom-in/) we read simple algorithms directly off the weight matrix of InceptionV1, showing how a <a href="https://microscope.openai.com/models/inceptionv1/mixed4c_0/447">car neuron</a> is built from tire, car body, and windshield neurons. So far it's an open question whether studying weights directly is scalable, letting us reverse-engineer more complex algorithms.
-
-One such algorithm in [curve detection](https://distill.pub/2020/circuits/curve-detectors/), which in InceptionV1 utilizes tens of thousands of weights across the first five layers. While it may seem intractable to reverse-engineer this algorithm by reading weights, the problem is simpler than it appears because they have a great deal of structure and patterns.
-
-Two such patterns are [neuron families](https://distill.pub/2020/circuits/early-vision/) and [circuit motifs](https://distill.pub/2020/circuits/zoom-in/#claim-2-motifs). Neuron families are neurons that do similar things, like the ten curve detectors in [layer 3b](https://microscope.openai.com/models/inceptionv1/mixed3b_0). Circuit motifs are weights that do similar things, like those connecting 3a early curve neurons and 3b curve neurons. Each of these weights is approximately predictable given the orientation of the curve each neuron responds to, so we consider these weights to implement the rotational equivariance motif. Thinking in patterns gives us scalability without losing precision, similar to how programmers benefit by thinking in functions as well as lines of code<d-footnote>We pay a small price in precision when we think about the patterns themselves, because the weights don't follow the neuron families and circuit motifs perfectly. However, just as a programmer can always open up a function to understand or change its mechanics, we can look at the weights behind a pattern and understand them close to the metal, which we'll do several times throughout this article. Conversely, if we were to take another approach like model distillation to try simplifying the curve detection algorithm, we would lose access to the original weights, paying a higher price of precision even if we were able to achieve scalability.</d-footnote>.
-
-Ultimately, our mapping of these patterns is only valuable if it does a good job of representing the underlying mechanics. To test this we hand-craft an _artificial artificial neural network_ to implement them and see that its curve detectors approximate those in InceptionV1.
+While the curve circuit in InceptionV1 is quaint next to the 175b weights in GPT-3, it's a big step up from the tiny circuits in Zoom In. We think the surprising simplicity of the curve circuit is a glimmer of hope that the Circuits approach may scale to letting us reverse-engineer big neural networks into small verifiable explanations.
 
 </div>
 
-<h3>Overview of the Curve Detector Algorithm</h3>
+<hr />
 
+<h2 id="overview">The Curve Detector Algorithm</h2>
 
-In this article we'll reverse-engineer the 10 curve neurons we studied in Curve Detectors <d-cite bibtex-key="cammarata2020curve" />, which reside in the fifth convolutional layer of InceptionV1. We’ll focus on one curve neuron, <a href="https://microscope.openai.com/models/inceptionv1/mixed3b_0/379">3b:379</a>, then show how they all follow a similar pattern.
+In this article we'll reverse-engineer the 10 curve neurons we studied in [Curve Detectors](https://distill.pub/2020/circuits/curve-detectors/) <d-cite bibtex-key="cammarata2020curve" />, which reside in the fifth convolutional layer of InceptionV1. We’ll focus on one curve neuron, <a href="https://microscope.openai.com/models/inceptionv1/mixed3b_0/379">3b:379</a>, then show how they all follow a similar pattern.
 
-To understand what the first four layers do in the context of curve detectors, we'll introduce **decomposed feature visualization**. Decomposed feature visualization renders a grid of feature visualization that shows the expanded weights of an upstream layer to a downstream neuron, in this case 3b:379.<d-footnote>Specifically, we calculate the gradient from each layer to the 3b curve family using a linear approximation of InceptionV1 where ReLUs are replaced with the identity. Then we use feature visualization with the objective of maximizing  the dot product between each image and each spatial position of the gradient.</d-footnote>. Intuitively, this is like decomposing the curve into simpler shapes, with simpler shapes the further back we go, from early curves, to lines, and eventually Gabor Filters. Each shape is oriented along the tangent of the curve in 3b:379.
+import Margin379 from 'pages/backToTheInput/margin379'
+
+<Margin379 />
+
+To get a high level understanding of the first four layers in the context of curve detectors, we use a method we call **decomposed feature visualization**. Decomposed feature visualization renders a grid of feature visualization that shows the expanded weights of an upstream layer to a downstream neuron, in this case 3b:379<d-footnote>Specifically, we calculate the gradient from each layer to the 3b curve family using a linear approximation of InceptionV1 where ReLUs are replaced with the identity. Then we use feature visualization with the objective of maximizing  the dot product between each image and each spatial position of the gradient.</d-footnote>. Intuitively, this is like decomposing the curve into simpler shapes, with simpler shapes the further back we go, from early curves, to lines, and eventually Gabor Filters. Each shape is oriented along the tangent of the curve in 3b:379.
 
 import Decomposed from 'pages/decomposed'
 
@@ -48,7 +49,7 @@ import Decomposed from 'pages/decomposed'
 
 
 
-We can take the highest magnitude position from each layer above and see which neuron families contribute to it to get a sense for how each shape is built.<d-footnote>Specifically, we take the highest magnitude spatial position from each layer and look at which neuron families according from <a href="https://distill.pub/2020/circuits/early-vision/">Overview of Early Vision</a> contribute most to it.</d-footnote><d-footnote>When doing this decomposition, it really matters which metric you choose to measure how neurons contribute to the vector, such as average or total weight, since there is a long tail of neurons with low magnitude that collectively make up a large fraction of the total weight. Training models with weight sparsity would reduce this long tail.</d-footnote>.
+We can take the highest magnitude position from each layer above and see which neuron families contribute to it to get a sense for how each shape is built<d-footnote>Specifically, we take the highest magnitude spatial position from each layer and look at which neuron families according from <a href="https://distill.pub/2020/circuits/early-vision/">Overview of Early Vision</a> contribute most to it.</d-footnote><d-footnote>When doing this decomposition, it really matters which metric you choose to measure how neurons contribute to the vector, such as average or total weight, since there is a long tail of neurons with low magnitude that collectively make up a large fraction of the total weight. Training models with weight sparsity would reduce this long tail.</d-footnote>.
 
 import SemanticDictionary from 'pages/semanticDictionary'
 
@@ -64,7 +65,7 @@ import Paths from 'pages/paths'
 
 
 
-With the important neuron families in mind we can look at the weights connecting them. Many of the weights connecting families in the above figure implement the equivariance motif, meaning they are approximately symmetrical. Since in this case it is a rotational symmetry, we say they implement rotational equivariance. We can see this by looking at the weights connecting 3a early curves and 3b:379.
+Now that we know which neuron families are most important for curve detection, we can invest in understanding the weights connecting them. Luckily this is sometimes easy, since weights connecting families tend to follow patterns that we call [motifs](https://distill.pub/2020/circuits/zoom-in/#claim-2-motifs). Many families in this diagram implement the rotational equivariance motif, meaning that each neuron in a family is approximately a rotated version of another neuron in that family. We can see this in the weights connecting 3a early curves and 3b curves.
 
 import CurveDiagonal from 'pages/curveDiagonal'
 
@@ -80,10 +81,17 @@ import CircuitWeights from 'pages/circuitWeights'
 
 
 
-This schematic gives us a high-level view of curve detection, but it lacks the precision of directly analyzing weights. In the next few sections we'll dive into the most important connections between families in 3a and 3b curve detectors, grounding us from thinking in abstract patterns to thinking in individual weights<d-footnote>To read more about the idea and benefits of fluidly navigating different levels of abstraction, we recommend the interactive essay <a href="http://worrydream.com/LadderOfAbstraction/">Up and Down the Ladder of Abstraction</a> by Bret Victory.</d-footnote>.
+So far we’ve looked at the neuron families that are most important to curve detection, and also at the circuit motifs connecting them. This high-level “circuit schematic” is useful for seeing a complex algorithm at a glance, and it tells us the main components we'd need to build if we wanted to reimplement the circuit from scratch.
 
-<h3>3a Early Curve Family</h3>
+The circuit schematic also makes it easy to describe a few sentence English story of how curve detection works. Gabor Filters turn into proto-lines which build lines and early curves. Finally, lines and early curves are composed into curves. In each case, each shape family (eg conv2d2 line) has positive weight across the tangent of the shape family it builds (eg. 3a early curve). Each shape family implements the rotational equivariance motif, containing multiple rotated copies of approximately the same neuron.
 
+In the next few sections we'll zoom in from this high level description to a weight-level analysis of how each of the 3a families we've looked at so far contribute to curve detectors.<d-footnote>To read more about the idea and benefits of fluidly navigating different levels of abstraction, we recommend the interactive essay <a href="http://worrydream.com/LadderOfAbstraction/">Up and Down the Ladder of Abstraction</a> by Bret Victor.</d-footnote>.
+
+<hr />
+
+<h2 id="components">The Components of Curve Detectors</h2>
+
+<h3 id="early-curve-family">3a Early Curve Family</h3>
 
 Early curves in 3a contribute more to the construction of curve detectors than any other neuron family. At every position curve neurons are excited by early curves in a similar orientation and inhibited by ones in the opposing orientation, closely following the general pattern we saw earlier.
 
@@ -98,14 +106,6 @@ At every position curve neurons are excited by early curves in a similar orienta
 import SimilarOpposing from 'pages/curves3a/weightsSimilarOpposing'
 
 <SimilarOpposing  />
-
-
-
-An interesting phenomenon is that curve detectors in the same orientation are slightly inhibitory when they’re located off the curve. This makes sense, as seeing an early curve located anywhere but the tangent indicates a different shape than a pure curve.
-
-import AnnotateSelectivity from 'pages/curves3a/annotateSelectivity'
-
-<AnnotateSelectivity  />
 
 
 
@@ -129,13 +129,7 @@ import NoNegativeWeights from 'pages/curves3a/noNegativeWeights'
 
 Using negative weights in this way follows a more general trend: our experience is that negative weights are used for things that are in some way similar enough that they could be mistaken. This seems potentially analogous to [lateral inhibition](https://en.wikipedia.org/wiki/Lateral_inhibition) in biological neural networks.
 
-<h3>Aside: Equivariance</h3>
-
-
-As we’ve seen, the connection between early curves and curves implement the equivariance motif.<d-footnote>[Equivariance](https://en.wikipedia.org/wiki/Equivariant_map) is when a type of transformation to the input causes features to transform in a parallel way. For example, convolutional neural networks are equivariant to translation: if you translate the input, a translated version of the same features fire.<d-footnote>Modulo concerns about pooling, strided convolutions, etc.</d-footnote>Creating neural networks which are equivariant to additional symmetries by design is an active -- and our view, exciting -- area of research <d-cite bibtex-key="bergstra2011statistical" />.</d-footnote>. As we’ve dug into InceptionV1, we’ve discovered many naturally occurring equivariant neuron families.<d-footnote>Other feature families that are equivariant to rotation: gabors, edge detectors, high-low frequency detectors, brightness gradient detectors, color contrast detectors, boundary detectors, oriented fur detectors. Features that are equivariant to horizontal flips: oriented dog head detectors, spirals. Features that are equivariant to color: color center-surround units, color contrast units.</d-footnote> The fact that equivariant families naturally occur seems to support equivariant neural networks as an important research direction, and suggest that the study of what features are naturally learned might be helpful in informing their design. In particular, there’s a special generalization of a convolution, called a group convolution, which can be used to encode symmetries like rotation, which the weights between early curves and curves seem to approximate. We’ll discuss equivariance in more detail in a later essay.
-
-<h3>3a Line Families</h3>
-
+<h3 id="line-families">3a Line Families</h3>
 
 [Overview of Early Vision](https://distill.pub/2020/circuits/early-vision/) separates line-like shapes in 3a into several families: [lines](https://distill.pub/2020/circuits/early-vision/#group_mixed3a_lines), [line misc](https://distill.pub/2020/circuits/early-vision/#group_mixed3a_line_misc.), [angles](https://distill.pub/2020/circuits/early-vision/#group_mixed3a_angles), [thick lines](https://distill.pub/2020/circuits/early-vision/#group_mixed3a_thick_lines), and [line ends](https://distill.pub/2020/circuits/early-vision/#group_mixed3a_line_ends). Since they have similar roles in the context of curve detectors we’ll discuss them together, while pointing out their subtle differences.
 
@@ -145,7 +139,8 @@ Instead, we can study which line orientations excite curve detectors using synth
 
 import LineComparison from 'pages/lines/lineComparison'
 
-<LineComparison data={require('./data/synthetic-lines.json')}  /> \
+<LineComparison data={require('./data/synthetic-lines.json')}  />
+
 
 
 This tolerance isn’t always symmetric, which we can see in 3b:406 below. On its left side it is most excited by lines about 10° upwards. If the line is oriented above 10° it is still excited, but if it is less than 10° it switches to being inhibited.
@@ -160,8 +155,8 @@ This view tells us how each curve detector responds to different orientations of
 
 import LinesRadial from 'pages/lines/radial'
 
-<h4>Lines</h4>
 
+#### Lines
 
 There are 11 simple line neurons in 3a that mostly fire to one orientation, although some activate more weakly to an "echo" 90 degrees away.
 
@@ -169,8 +164,8 @@ There are 11 simple line neurons in 3a that mostly fire to one orientation, alth
 
 
 
-<h4>Texture Lines</h4>
 
+#### Texture Lines
 
 Five neurons in 3a respond to lines that are perpendicular to the orientation where they are longest. These neurons mostly detect fur, but they also contribute to 3b curves. 
 
@@ -178,8 +173,8 @@ Five neurons in 3a respond to lines that are perpendicular to the orientation wh
 
 
 
-<h4>Cliffs</h4>
 
+#### Cliffs
 
 Finally, there are five line neurons with curiously sharp transitions. These lines want an orientation facing a particular direction, and tolerate error in that direction, but definitely don't want it going the other way, even if slightly. In curve detection, this is useful for handling imperfections, like bumps.
 
@@ -189,8 +184,8 @@ Finally, there are five line neurons with curiously sharp transitions. These lin
 
 We find cliff-like line neurons an interesting example of non-linear behavior. We usually think of neurons as measuring distance from some ideal. For instance, we may expect car neurons to prefer <d-footnote>Or we could imagine a more sophisticated metric, such as style. Since ImageNet contains classes for sports cars and non-sports cars, there may be neurons that measure the “sportiness" of different cars. We think that studying neurons that correspond to cars is an interesting research direction, since it’s easy to accumulate datasets of cars with labelled properties such as year, country of origin, and price.</d-footnote> cars of a certain size, and has weaker activations to cars that are bigger or smaller than its ideal. But this line family provides a counter-example, accepting error on one side while not firing at all on the other.
 
-<h4>Lines in conv2d2</h4>
 
+#### Lines in conv2d2
 
 The different types of line neurons we looked at above each have different behaviors, which is part of why the weight matrix between 3a lines and 3b curves is indecipherable. However, if we go back one more layer and look at how conv2d2 lines connect to 3b curves, we see structure.
 
@@ -202,12 +197,13 @@ import Conv2d2Weights from 'pages/lines/conv2d2Weights'
 
 We think this points to an interesting property of both curves and lines in InceptionV1. The line family in conv2d2 are roughly "pure" line detectors, detecting lines in an elegant pattern. The next layer (3a) builds lines too, but they're more applied and nuanced, with seemingly-awkward behavior like cliff-lines where the network finds them useful. Similarly, the 3b curve detectors are surprisingly elegant detectors of curves behaviorally, and mostly follow clean patterns in their construction. In contrast, the curves in the next layer (4a) are more applied and nuanced, mostly corresponding to [3d geometry](https://distill.pub/2020/circuits/curve-detectors/#4a) and seemingly specialized for detecting real-world objects like the tops of cups and pans. Perhaps this points to a yet unnamed motif of pure shape detectors directly followed by applied ones.
 
-<h3>Cosmetic Invariance</h3>
-
+<h3 id="cosmetic-neurons">Cosmetic Neurons</h3>
 
 In Curve Detectors we saw how curve neurons seem to be robust to several cosmetic properties, with similar behavior across textures like metal and wood in a variety of lighting. How do they do it?
 
-<img width={704} style={{marginBottom: 20}} src={require('./datasetExamples.png')} />
+import datasetExamples from './datasetExamples.png'
+
+<img width={704} style={{marginBottom: 20}} src={datasetExamples} />
 
 
 
@@ -215,32 +211,15 @@ We believe this reflects a more widespread phenomenon in early vision. As progre
 
 While we won't do a detailed weight-level analysis of how cosmetic robustness propagates through the shapes of early vision in this article, which is a broader topic than curve detection, we think this is an exciting direction for future research.
 
-<h3>Artificial Artificial Neural Network</h3>
+<hr />
 
+<h2 id="artificial-artificial-neural-network">An Artificial Artificial Neural Network</h2>
 
-How do we know this story about the mechanics of curve detectors is true? One way is to use it to reimplement curve detectors from scratch. We programmatically tuned the weights of a blank neural network to implement the neuron families and circuit motifs from this article, and made the python code available and runnable in this Colab notebook. We did not look at the original neural network’s weights when constructing this _artificial artificial neural network_, which would go against the spirit of the exercise. 
+How do we know this story about the mechanics of curve detectors is true? One way is to use it to reimplement curve detectors from scratch. We manually set the weights of a blank neural network to implement the neuron families and circuit motifs from this article, crafting an artificial_ _neural network, and made the python code available and runnable in this Colab notebook. We did not look at the original neural network’s weights when constructing it, which would go against the spirit of the exercise.
 
-We can compare the circuits of our artificial artificial neural network with the normally trained InceptionV1 model.
+To compare our artificial curve detectors against InceptionV1's naturally learned ones we have the full palette of techniques we used in [Curve Detectors](https://distill.pub/2020/circuits/curve-detectors/) available to us. We'll choose three: feature visualization, dataset examples, and synthetic stimuli. From there we'll run two additional comparisons by leveraging circuits and model editing.
 
-	
-
-import AANNCircuit from 'pages/aann/circuit'
-
-<AANNCircuit data={require('./data/aann-circuit.json')} />
-
-
-
-If we look at the full weight matrix connecting 3a families with 3b curves in the artificial artificial neural network we see that they closely resemble the weights in the naturally trained InceptionV1, but cleaner since we set them programmatically.
-
- 
-
-import AANNWeights from 'pages/aann/weights'
-
-<AANNWeights data={require('./data/aann-weights.json')} />
-
-
-
-We can apply any technique from [Curve Detectors](https://distill.pub/2020/circuits/curve-detectors/) to compare our artificial curve detectors to the natural ones. One technique we've already shown is feature visualization, which renders grayscale curves because we don't include cosmetic neurons like color-contrast detectors in our curve detectors. Perhaps the most useful comparison is using synthetic curve stimuli, which shows us how curve neurons respond to the curve stimuli across different orientations and radii. We see that they behave similar to the natural curve detectors, but with weak echoes to curve stimuli with a large radius, which we believe could be fixed with careful tuning.
+First we'll look at feature visualization and responses to synthetic curve stimuli together. We see the feature visualizations indeed render curves, except they are grayscale since we never include cosmetic features such as color-contrast detectors in our artificial curves. We see their response to curve stimuli approximates the natural curve detectors across a range of radii and all orientations. One difference is our artificial neurons have a slight echo<d-footnote>Activations on the opposite of the curve's most preferred orientation, which we discussed in more depth in Curve Detectors.</d-footnote>, which we believe could be removed by more carefully setting negative weights.
 
 import AANNSynthetic from 'pages/aann/syntheticCurves'
 
@@ -248,12 +227,7 @@ import AANNSynthetic from 'pages/aann/syntheticCurves'
 
 
 
-<h4>Artificial Neuron Surgery</h4>
-
-
-Another way to test our artificial curve detectors is to use them in place of InceptionV1's natural ones and see how it affects the model's performance. When we remove InceptionV1’s 3b curve detectors entirely, the model’s top-5 accuracy across 2000 validation set images drops from 88.6% to 86.3%. When we replace 3b curve detectors with our artificial curve detectors more than half of this drop is recovered, with an accuracy of 87.6%. Note that we're likely not mimicking the exact conditions the model was trained under<d-footnote>The InceptionV1 model we’ve been looking at was originally trained at Google using a precursor to the Tensorflow library that no longer exists, and the code used to train it has been lost.</d-footnote>, but our initial experiments suggest that injecting our artificial curve detectors recover more than half the hit in top-5 accuracy across 2000 ImageNet validation images caused by ablating 3b curve neurons altogether. Specifically, the vanilla model archives 88.6% accuracy, 87.6% with substituted artificial curve neurons, and 86.3% with no 3b curves. We suspect that tuning normalization or adding in color contrast detectors to our currently grayscale artificial curve neurons are low hanging fruit for reducing this gap.
-
-We can also get a qualitative sense for the differences by looking at a saliency map of dataset examples that cause curve detectors to fire strongly.
+We can also get a qualitative sense for the differences by looking at a saliency map of dataset examples that cause artificial curve detectors to fire strongly<d-footnote>Since our artificial curve detectors don't respond to color, there are likely many false-negatives where natural curve detectors correctly catch that our artificial ones don't. Our goal in building artificial curve detectors isn't perfection, but to show that we can use the circuit patterns described in this article to roughly approximate the curve detection algorithm in InceptionV1.</d-footnote>.
 
 import Surgery from 'pages/aann/surgery'
 
@@ -261,12 +235,33 @@ import Surgery from 'pages/aann/surgery'
 
 
 
-Overall, we believe these experiments show that our artificial curve detectors are roughly analogous to the naturally trained ones. Since they are nearly a direct translation from the neuron families and motifs we've described in this article into Python code for setting weights,  we think this is strong evidence these neuron families and motifs accurately reflect the underlying circuits that construct curve detectors.
+Next we can compare the weights for the circuits connecting neuron families in the two models, alongside feature visualizations for each of those families. We see they follow approximately the same circuit structure.
 
-<h3>Downstream</h3>
+import AANNCircuit from 'pages/aann/circuit'
+
+<AANNCircuit data={require('./data/aann-circuit.json')} />
 
 
-Having studied how curve neurons are built, we'll briefly look at how curve neurons are used downstream to construct more sophisticated shapes in the next layer, 4a.
+
+ 
+
+We can also zoom into specific weight matrices that we've already studied in this article. We see the raw weights between early curves and curves as well as lines to curves look approximately like the ones in InceptionV1, but cleaner since we set them programmatically.
+
+import AANNWeights from 'pages/aann/weights'
+
+<AANNWeights data={require('./data/aann-weights.json')} />
+
+
+
+Our final experiment to compare artificial curve neurons with natural curve neurons is to do artificial neuron surgery to replace InceptionV1's curve neurons with ours to see how they impact model performance. A preliminary experiment suggests that adding artificial curve detectors helps recover some of the loss across the dataset of removing them from the model entirely<d-footnote>Specifically, when we remove InceptionV1’s 3b curve detectors entirely, the model’s top-5 accuracy across 2000 validation set images drops from 88.6% to 86.3%. When we replace 3b curve detectors with our artificial curve detectors more than half of this drop is recovered, with an accuracy of 87.6%. We suspect that tuning normalization or adding in color contrast detectors to our currently grayscale artificial curve neurons are low hanging fruit for reducing this gap. <br/><br/>There are two caveats worth mentioning. First, we're likely not mimicking the exact conditions the model was trained under, since it was trained at Google using a precursor to the Tensorflow library that no longer exists. Secondly, the reason we ran it on less than the full validation set was operational, not a result of cherry-picking. We initially ran it on a small set in a prototype experiment to validate our hypothesis. We planned to run it on the full set before our publication date, but due OpenAI infrastructure changes this was harder than expected and we were unable to. For this reason we emphasize that the experiment is preliminary, although we suspect it's likely to work on the full validation set as well.</d-footnote>.
+
+Overall, we believe these five experiments show our artificial curve detectors are roughly analogous to the naturally trained ones. Since they are nearly a direct translation from the neuron families and circuit motifs we've described in this article into Python code for setting weights, we think this is strong evidence these patterns accurately reflect the underlying circuits that construct curve detectors.
+
+<hr />
+
+<h2 id="downstream">Downstream</h2>
+
+While this article focused mostly on how curve detection works upstream of the curve detector, it's also worth briefly considering how curves are used downstream in the model. It's easiest to see their mark on the next layer, 4a, where they're used to construct more sophisticated shapes.
 
 The curve neurons in 3b are used to build more complex and specific shape detectors such as [sophisticated curves](https://distill.pub/2020/circuits/early-vision/), [circles](https://distill.pub/2020/circuits/early-vision/#group_mixed3b_circles_loops), [S-shapes](https://distill.pub/2020/circuits/early-vision/#group_mixed3b_curve_shapes), [spirals](https://distill.pub/2020/circuits/early-vision/#group_mixed3b_curve_shapes), [divots](https://distill.pub/2020/circuits/early-vision/#group_mixed3b_divots), and [“evolutes"](https://distill.pub/2020/circuits/early-vision/#group_mixed3b_evolute) (a term we’ve repurposed to describe units detecting curves facing away from the middle). 
 
@@ -279,13 +274,6 @@ import Downstream from 'pages/downstream'
 
 
 Layer 4a also constructs a series of curve detectors, mostly in the 5x5 branch that specializes in 3d geometry. However, we believe they should be thought of less as pure abstract shapes and more as corresponding to specific worldly objects, like [4a:406](https://microscope.openai.com/models/inceptionv1/mixed4a_0/406) which often detects the top of cups and pans.
-
-<h3>Conclusion</h3>
-
-
-In this article we reverse-engineered the curve detection algorithm in InceptionV1 into a human understandable circuit schematic and used it to reimplement curve detector neurons from scratch, demonstrating that the schematic accurately reflects what the neural network is doing.
-
-While this article focused on only curve detection, we believe that neural networks learn many sophisticated and creative algorithms that can be reverse-engineered and understood by analyzing the patterns in their weights. Furthermore, we believe these high level algorithms reappear between neural networks, as we will investigate more in the third article of this series, Universal Curves. If learned algorithms are indeed universal, we believe they may be telling us something rich about the nature of vision that might transcend just the study of neural networks.
 
 <PrevNext />
 

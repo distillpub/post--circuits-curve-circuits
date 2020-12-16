@@ -1,17 +1,15 @@
 import Figure from 'components/figure'
 import figure from './figure.png'
 
-export default ({ isBanner = false }) =>
-  typeof window === 'undefined' ? (
-    false
-  ) : (
-    <Figure banner={isBanner}>
+export default () =>
+  typeof window === 'undefined' ? null : (
+    <Figure>
       <img
         src={figure}
         style={{
           alignSelf: 'center',
           marginTop: 10,
-          marginBottom: isBanner ? 40 : 10,
+          marginBottom: 10,
         }}
         width={1300}
       />

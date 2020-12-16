@@ -1,3 +1,5 @@
+import React from 'react'
+
 export default (fn) => {
   return class extends React.Component {
     state = { data: null }
@@ -6,7 +8,6 @@ export default (fn) => {
       const queryString = window.location.search
       const urlParams = new URLSearchParams(queryString)
       const url = urlParams.get('data_url')
-      console.log('url is', url)
 
       const data = await (await fetch(url)).json()
       this.setState({ data })
@@ -21,11 +22,13 @@ export default (fn) => {
       const Fn = fn
       const { data, ...props } = this.props
       if (this.props.data) {
-        return <Fn {...this.props.data} {...props} />
+        let { data } = this.props
+        return <Fn {...data} {...props} />
       }
 
       if (this.state.data) {
-        return <Fn {...this.state.data} {...props} />
+        let { data } = this.state
+        return <Fn {...data} {...props} />
       }
 
       return <div>loading</div>

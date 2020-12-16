@@ -1,0 +1,184 @@
+/*****************************************
+ * TOC
+ ******************************************/
+@media (max-width: 1199px) {
+  d-contents {
+    display: none;
+    justify-self: start;
+    align-self: start;
+    padding-bottom: 0.5em;
+    margin-bottom: 1em;
+    padding-left: 0.25em;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+  }
+}
+d-contents a:hover {
+  border-bottom: none;
+}
+
+@media (min-width: 1200px) {
+  d-contents {
+    align-self: start;
+    grid-column-start: 1 !important;
+    grid-column-end: 4 !important;
+    justify-self: end;
+    margin-top: 0em;
+    padding-right: 3em;
+    padding-left: 2em;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    border-right-width: 1px;
+    border-right-style: solid;
+    border-right-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+d-contents nav h3 {
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+d-contents nav div {
+  color: rgba(0, 0, 0, 0.8);
+  font-weight: bold;
+}
+
+d-contents nav a {
+  color: rgba(0, 0, 0, 0.8);
+  border-bottom: none;
+  text-decoration: none;
+}
+
+d-contents li {
+  list-style-type: none;
+}
+
+d-contents ul {
+  padding-left: 1em;
+}
+
+d-contents nav ul li {
+  margin-bottom: 0.25em;
+}
+
+d-contents nav a:hover {
+  text-decoration: underline solid rgba(0, 0, 0, 0.6);
+}
+
+d-contents nav ul {
+  margin-top: 0;
+  margin-bottom: 6px;
+}
+
+d-contents nav > div {
+  display: block;
+  outline: none;
+  margin-bottom: 0.5em;
+}
+
+d-contents nav > div > a {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+d-contents nav > div > a:hover,
+d-contents nav > ul > li > a:hover {
+  text-decoration: none;
+}
+
+/* ****************************************
+* Thread Info
+******************************************/
+
+.thread-info {
+  background-color: hsl(54, 78%, 96%);
+  border-left: solid hsl(54, 33%, 67%) 1px;
+  padding: 1em;
+  color: hsla(0, 0%, 0%, 0.67);
+}
+
+d-title {
+  padding: 0px !important;
+}
+
+#thread-nav {
+  margin-top: 20;
+  margin-bottom: 1.5rem;
+  display: grid;
+  grid-template-columns: 45px 5fr 1fr;
+  grid-template-areas:
+    'icon explanation explanation '
+    'icon prev next';
+  grid-column-gap: 1.5em;
+}
+
+@media (min-width: 768px) {
+  #thread-nav {
+    grid-template-columns: 65px 5fr 1fr;
+  }
+}
+
+#thread-nav .icon {
+  grid-area: icon;
+  padding: 0.5em;
+  justify-self: center;
+}
+
+#thread-nav .explanation {
+  grid-area: explanation;
+  font-size: 85%;
+  color: hsl(0, 0%, 0.33);
+}
+
+#thread-nav .prev {
+  grid-area: prev;
+}
+
+#thread-nav .prev::before {
+  content: '← Previous Article';
+}
+
+#thread-nav .overview {
+  scroll-behavior: smooth;
+}
+
+#thread-nav .overview::before {
+  content: '↑';
+  white-space: nowrap;
+  margin-right: 0.5em;
+}
+
+#thread-nav .next {
+  grid-area: next;
+  scroll-behavior: smooth;
+}
+
+#thread-nav .next::before {
+  content: 'Next Article →';
+}
+
+#thread-nav .next::before,
+#thread-nav .prev::before {
+  display: block;
+  white-space: nowrap;
+  padding: 0.5em 0;
+  font-size: 80%;
+  font-weight: bold;
+  margin-top: 0px;
+  margin-right: 0.5em;
+  text-transform: uppercase;
+}
+
+#thread-nav .prev,
+#thread-nav .next,
+#thread-nav .overview {
+  font-size: 80%;
+  line-height: 1.5em;
+  font-weight: 600;
+  border-bottom: none;
+  color: #2e6db7;
+  /* margin-top: 0.25em; */
+  letter-spacing: 0.25px;
+}

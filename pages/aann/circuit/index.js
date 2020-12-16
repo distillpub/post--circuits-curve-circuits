@@ -77,7 +77,10 @@ const Circuit = ({ weights, model, title, padding, fvs }) => {
             <ZoomedImg
               size={size}
               padding={padding(index)}
-              style={{ borderLeft: '1px solid rgba(0, 0, 0, 0.2)' }}
+              style={{
+                borderRadius: 0,
+                borderLeft: '1px solid rgba(0, 0, 0, 0.2)',
+              }}
               src={fvs[index]}
             />
           </Surface>

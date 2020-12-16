@@ -31,6 +31,8 @@ families.push({ name: 'residual', neurons: residual })
 
 // pages/data/radialLines.json
 export default cofab(({ radialTuningCurves, size = 100, name }) => {
+  if (typeof window === 'undefined') return null
+
   const { neurons } = families.filter((f) => f.name === name)[0]
 
   return (

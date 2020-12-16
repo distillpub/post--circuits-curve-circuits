@@ -1,6 +1,12 @@
 import React from 'react'
 import { Surface, Text } from 'components/ui'
 import { featureVis } from 'components/helpers'
+import img1 from './img1.png'
+import img2 from './img2.png'
+import artificial1 from './artificial1.png'
+import artificial2 from './artificial2.png'
+import natural1 from './natural1.png'
+import natural2 from './natural2.png'
 
 const size = 180
 
@@ -28,32 +34,32 @@ export default () => (
       </figcaption>
       <Img
         width={size}
-        src={require('./img1.png')}
+        src={img1}
         style={{ gridRow: 'img 1', gridCol: 'img' }}
       />
       <Img
         width={size}
-        src={require('./img2.png')}
+        src={img2}
         style={{ gridRow: 'img 2', gridCol: 'img' }}
       />
       <Img
         width={size}
-        src={require('./artificial1.png')}
+        src={artificial1}
         style={{ gridRow: 'img 1', gridCol: 'artificial' }}
       />
       <Img
         width={size}
-        src={require('./artificial2.png')}
+        src={artificial2}
         style={{ gridRow: 'img 2', gridCol: 'artificial' }}
       />
       <Img
         width={size}
-        src={require('./natural1.png')}
+        src={natural1}
         style={{ gridRow: 'img 1', gridCol: 'natural' }}
       />
       <Img
         width={size}
-        src={require('./natural2.png')}
+        src={natural2}
         style={{ gridRow: 'img 2', gridCol: 'natural' }}
       />
     </Surface>

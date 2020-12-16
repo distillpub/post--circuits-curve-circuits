@@ -30,8 +30,8 @@ class MyDocument extends Document {
         {
           author: 'Ludwig Schubert',
           authorURL: 'https://schubert.io/',
-          affiliation: 'OpenAI',
-          affiliationURL: 'https://openai.com',
+          affiliation: '',
+          affiliationURL: '',
         },
         {
           author: 'Michael Petrov',

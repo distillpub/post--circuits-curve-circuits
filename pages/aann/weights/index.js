@@ -64,7 +64,6 @@ const Header = ({ children }) => (
 )
 
 export default cofab(({ weights, fvs_3a, fvs_3b }) => {
-  console.log('weights are', weights.length)
   return (
     <Figure>
       <Surface alignSelf="center" flexFlow="row">

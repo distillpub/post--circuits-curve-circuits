@@ -1,11 +1,10 @@
-import fetchGradients from 'components/fetchGradients'
 import Tiles from 'components/tiles'
 import Figure from 'components/figure'
-import { Spinner } from 'evergreen-ui'
 import { scaleLinear } from 'd3-scale'
 import React from 'react'
 import { Surface, Text } from 'components/ui'
 import { featureVis } from 'components/helpers'
+import weights from 'components/weights'
 
 const line = (
   <svg
@@ -25,21 +24,7 @@ const line = (
 )
 
 export default class SimilarOpposing extends React.Component {
-  state = { weights: null }
-
-  componentWillMount() {
-    fetchGradients('inceptionv1', 'mixed3a', 'mixed3b').then((weights) => {
-      this.setState({ weights })
-    })
-  }
-
   render() {
-    const { weights } = this.state
-
-    if (!weights) {
-      return <Spinner />
-    }
-
     const size = 90
     const top = 35
     const row = (upstreamNeuron, neuron) => (
@@ -138,8 +123,12 @@ export default class SimilarOpposing extends React.Component {
         </Surface>
         <figcaption style={{ width: 704, alignSelf: 'center', marginTop: 10 }}>
           There are a couple other subtle things you can find if you look
-          closely. For example, you can see that the weights shift slightly over
-          the course of the curve, to track the change in local curvature.
+          closely. Firstly, you can see that the weights shift slightly over the
+          course of the curve, to track the change in local curvature. Secondly,
+          curve detectors in the same orientation are slightly inhibitory when
+          they’re located off the curve. This makes sense, as seeing an early
+          curve located anywhere but the tangent indicates a different shape
+          than a pure curve.
         </figcaption>
       </Figure>
     )

@@ -2,33 +2,21 @@ import React from 'react'
 import { Surface } from 'components/ui'
 import Figure from 'components/figure'
 import { featureVis } from 'components/helpers'
-import fetchGradients from 'components/fetchGradients'
 import Tiles from 'components/tiles'
 import { scaleLinear } from 'd3-scale'
 import { range } from 'lodash'
-import { Icon, Spinner } from 'evergreen-ui'
+import { Icon } from 'evergreen-ui'
+import weights from 'components/weights.json'
 
 export const getInitialProps = () => {
   return {}
 }
 
 export default class CurveTiles extends React.Component {
-  state = { weights: null }
-
-  componentWillMount() {
-    fetchGradients('inceptionv1', 'mixed3a', 'mixed3b').then((weights) => {
-      this.setState({ weights })
-    })
-  }
-
   render() {
-    const { weights } = this.state
     const { size = 120 } = this.props
     const scale = scaleLinear().domain([0, 32])
 
-    if (!weights) {
-      return <Spinner />
-    }
     const upstream = [147, 189, 81, 104, 92, 145, 95, 71, 71, 147]
     const neurons = [379, 406, 385, 343, 342, 388, 324, 340, 330, 349]
 
@@ -65,7 +53,7 @@ export default class CurveTiles extends React.Component {
             </Surface>
           ))}
         </Surface>
-        <figcaption style={{ width: 704, alignSelf: 'center', marginTop: 20 }}>
+        <figcaption style={{ width: 704, alignSelf: 'center', marginTop: 40 }}>
           The weights connecting 3a early curves with 3b:379 implement
           rotational equivariance. It turns out there are curves of curves
           literally inscribed in the weights of neural networks. We’ll discuss

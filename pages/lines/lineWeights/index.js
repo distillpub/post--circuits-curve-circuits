@@ -1,30 +1,18 @@
 import React from 'react'
 import { Surface } from 'components/ui'
-import fetchGradients from 'components/fetchGradients'
 import Tiles from 'components/tiles'
 import { scaleLinear } from 'd3-scale'
 
 import cofab from 'pages/cofab'
 import { featureVis } from 'components/helpers'
-import { Spinner } from 'evergreen-ui'
+import weights from 'components/weights'
 
 export default cofab(
   class LineWeights extends React.Component {
-    state = { weights: null }
-
-    componentWillMount() {
-      fetchGradients('inceptionv1', 'mixed3a', 'mixed3b').then((weights) => {
-        this.setState({ weights })
-      })
-    }
-
     render() {
-      const { weights } = this.state
       const { tuningCurves } = this.props
       const earlyNeurons = [27, 187, 154, 57]
       const scale = scaleLinear().domain([0, 35])
-
-      if (!weights) return <Spinner />
 
       const size = 194
       const activeNeuron = 406
@@ -36,7 +24,7 @@ export default cofab(
           flexFlow="row"
           alignItems="center"
           justifyContent="center"
-          marginY={20}
+          marginBottom={20}
         >
           <Surface>
             <Surface flexFlow="row" flexWrap="wrap" marginRight={20}>

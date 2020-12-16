@@ -75,6 +75,8 @@ export default cofab((data) => (
         ))}
       </Surface>
       <figcaption style={{ alignSelf: 'center', width: 704, marginTop: 20 }}>
+        We use decomposed feature visualization to show how the first four
+        layers of InceptionV1 incrementally build towards curve detectors in 3b.
         To increase legibility, we render each feature visualization with alpha
         transparency and grayscale. Since curve detectors are invariant to
         color, the vibrant colors feature visualization produces don't give us

@@ -91,7 +91,7 @@ const families = {
     },
     {
       name: 'Angles',
-      icon: featureVis('InceptionV1', 'mixed3a', 177),
+      icon: featureVis('InceptionV1', 'mixed3a', 100),
       href:
         'https://distill.pub/2020/circuits/early-vision/#group_mixed3a_angles',
       percentage: 16,
@@ -220,14 +220,13 @@ export default () => (
       ))}
     </Surface>
     <figcaption style={{ alignSelf: 'center', width: 704, marginTop: 10 }}>
-      By breaking down the highest magnitude spatial position in each layer into
-      neuron families, we can see which shapes from each layer are most
-      important in curve detection. This is similar to a semantic dictionary
-      interface in{' '}
+      We decompose the highest magnitude spatial position in each layer into
+      neuron families to see which families contribute most to curve detection.
+      This is similar to a semantic dictionary interface in{' '}
       <a href="https://distill.pub/2018/building-blocks/">
         The Building Blocks of Interpretability
       </a>
-      .
+      .<d-cite bibtex-key="olah2018building" />
     </figcaption>
   </Figure>
 )

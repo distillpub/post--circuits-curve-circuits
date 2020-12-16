@@ -1,5 +1,7 @@
 import { Surface, Text } from 'components/ui'
 import Figure from 'components/figure'
+import artificial from './artificial.png'
+import natural from './natural.png'
 
 const figureWidth = 509
 export default () => (
@@ -32,27 +34,29 @@ export default () => (
         Natural InceptionV1 Curve Neurons
       </Text>
       <img
-        src={require('./artificial.png')}
+        src={artificial}
         style={{
           gridRow: 'figure',
           gridColumn: 'aann',
+          mixBlendMode: 'darken',
           width: figureWidth,
         }}
       />
       <img
-        src={require('./natural.png')}
+        src={natural}
         style={{
           width: figureWidth,
           gridRow: 'figure',
+          mixBlendMode: 'darken',
           gridColumn: 'natural',
         }}
       />
     </Surface>
     <figcaption style={{ width: 704, alignSelf: 'center', marginTop: 20 }}>
-      We can compare the curve detectors in our artificial artificial neural
-      network against the curve detectors in a naturally trained InceptionV1. We
-      see our artificial artificial neurons approximate the neurons in
-      InceptionV1.
+      We can compare the curve detectors in a neural network we hand-crafted
+      with the curve detectors in InceptionV1 by measuring how they activate to
+      synthetic curve stimuli. We see that across a range of radii and
+      orientations, our artificial curve neurons apprxoximate the natural ones.
     </figcaption>
   </Figure>
 )

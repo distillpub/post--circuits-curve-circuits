@@ -3,11 +3,10 @@ import { Surface } from 'components/ui'
 import Figure from 'components/figure'
 import { scaleLinear } from 'd3-scale'
 import { featureVis } from 'components/helpers'
-import fetchGradients from 'components/fetchGradients'
 import { max, flatten } from 'lodash'
 import Arrow from '@elsdoerfer/react-arrow'
+import allWeights from 'components/weights'
 
-import { Spinner } from 'evergreen-ui'
 import Tiles from 'components/tiles'
 
 const highlightColor = `rgba(228, 118, 88, 0.9)`
@@ -37,25 +36,14 @@ export const getInitialProps = () => {
 }
 
 export default class Weights1 extends React.Component {
-  state = { allWeights: null, activeNeuron: neurons[0] }
-
-  componentWillMount() {
-    fetchGradients('inceptionv1', 'mixed3a', 'mixed3b').then((allWeights) => {
-      this.setState({ allWeights })
-    })
-  }
+  state = { activeNeuron: neurons[0] }
 
   render() {
-    const { activeNeuron, allWeights } = this.state
+    const { activeNeuron } = this.state
     const { noRow = false } = this.props
-
-    if (!allWeights) {
-      return <Spinner />
-    }
 
     const upstreamNeuron = upstream[neurons.indexOf(activeNeuron)]
     const weights = allWeights[upstreamNeuron][activeNeuron]
-    console.log('weights are', weights)
 
     const figureSize = 180
     const tileSize = 90

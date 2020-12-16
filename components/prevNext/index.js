@@ -5,7 +5,7 @@ export default () => (
   <section
     id="thread-nav"
     className="thread-info"
-    style={{ height: 160, marginTop: 10, marginBottom: 40 }}
+    style={{ marginTop: 10, marginBottom: 40 }}
   >
     <img
       className="icon"
@@ -20,8 +20,8 @@ export default () => (
       an experimental format collecting invited short articles and critical
       commentary delving into the inner workings of neural networks.
     </p>
-    <a className="prev" href="/2020/circuits/curve-detectors/">
-      Curve Detectors
+    <a className="prev" href="/2020/circuits/equivariance/">
+      Naturally Occurring Equivariance in Neural Networks
     </a>
   </section>
 )

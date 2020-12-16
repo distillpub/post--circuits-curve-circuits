@@ -1,30 +1,27 @@
 import React from 'react'
 import { Surface } from 'components/ui'
 
-import fetchGradients from 'components/fetchGradients'
 import { featureVis } from 'components/helpers'
-import { Spinner } from 'evergreen-ui'
 import Tiles from 'components/tiles'
 import { scaleLinear } from 'd3-scale'
+import fetchGradients from 'components/fetchGradients'
 
 class LineTiles extends React.Component {
   state = { weights: null }
-
-  componentWillMount() {
-    const { upstreamLayer = 'conv2d2', layer = 'mixed3b' } = this.props
-    fetchGradients('inceptionv1', upstreamLayer, layer).then((weights) => {
+  componentDidMount() {
+    fetchGradients('inceptionv1', 'conv2d2', 'mixed3b').then((weights) => {
       this.setState({ weights })
     })
   }
 
   render() {
-    const { weights } = this.state
     const { size = 60, upstream, neurons, noBorder } = this.props
     const { upstreamLayer = 'conv2d2', layer = 'mixed3b' } = this.props
+    const { weights } = this.state
     const scale = scaleLinear().domain([0, 38])
 
     if (!weights) {
-      return <Spinner />
+      return <div>loading</div>
     }
 
     // curves

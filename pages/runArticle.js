@@ -1,0 +1,6 @@
+const fs = require('fs')
+const React = require('react')
+const mdx = require('@mdx-js/mdx')
+const mdxText = fs.readFileSync('article.md', 'utf8')
+const jsx = mdx.sync(mdxText, { components: { wrapper: React.Fragment } })
+fs.writeFileSync('./article.js', jsx)

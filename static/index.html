@@ -8,7 +8,7 @@
 </head>
 
 <body>
-  <d-front-matter><script type="text/json">{"title":"Curve Circuits","description":"Reverse engineering the curve detection algorithm from InceptionV1 and reimplementing it from scratch.","authors":[{"author":"Nick Cammarata","authorURL":"http://nickcammarata.com","affiliation":"OpenAI","affiliationURL":"https://openai.com"},{"author":"Gabriel Goh","authorURL":"http://gabgoh.github.io","affiliation":"OpenAI","affiliationURL":"https://openai.com"},{"author":"Shan Carter","authorURL":"http://shancarter.com","affiliation":"Observable","affiliationURL":"https://observablehq.com"},{"author":"Ludwig Schubert","authorURL":"https://schubert.io/","affiliation":"","affiliationURL":"https://openai.com"},{"author":"Michael Petrov","authorURL":"https://twitter.com/mpetrov","affiliation":"OpenAI","affiliationURL":"https://openai.com"},{"author":"Chris Olah","authorURL":"https://colah.github.io","affiliation":"OpenAI","affiliationURL":"https://openai.com"}]}</script></d-front-matter>
+  <d-front-matter><script type="text/json">{"title":"Curve Circuits","description":"Reverse engineering the curve detection algorithm from InceptionV1 and reimplementing it from scratch.","authors":[{"author":"Nick Cammarata","authorURL":"http://nickcammarata.com","affiliation":"OpenAI","affiliationURL":"https://openai.com"},{"author":"Gabriel Goh","authorURL":"http://gabgoh.github.io","affiliation":"OpenAI","affiliationURL":"https://openai.com"},{"author":"Shan Carter","authorURL":"http://shancarter.com","affiliation":"Observable","affiliationURL":"https://observablehq.com"},{"author":"Chelsea Voss","authorURL":"https://twitter.com/cvoss","affiliation":"OpenAI","affiliationURL":"https://openai.com"},{"author":"Ludwig Schubert","authorURL":"https://schubert.io/","affiliation":"","affiliationURL":"https://openai.com"},{"author":"Chris Olah","authorURL":"https://colah.github.io","affiliation":"OpenAI","affiliationURL":"https://openai.com"}]}</script></d-front-matter>
 
   <d-title>
   </d-title>
@@ -19,6 +19,24 @@
   <d-appendix>
     <d-footnote-list></d-footnote-list>
     <d-citation-list></d-citation-list>
+
+    <h3>Author Contributions</h3>
+    <p>As we mentioned in Curve Detectors, our first investigation into curve neurons, it’s hard to separate author contributions between different papers in the Circuits project. Much of the original research on curve neurons came before we decided to separate the publications into the behavior of curve neurons and how they are built. In this section we’ve tried to isolate contributions specific to the mechanics of the curve neurons.</p>
+
+    <p><b>Interface Design & Prototyping.</b> Many weight diagrams were first prototyped by Chris during his first investigations of different families of neurons in early early vision, and some of these were turned into presentations. Nick extended them for use in this paper. Chris designed and implemented the decomposed feature visualization figure in the first section. Many of the other interfaces were designed by Nick with the help of Shan and Chris. In particular, Shan helped to design the figure showing how the different families of early vision connect leading up to the curve family.</p>
+
+    <p><b>Conceptual Contributions.</b> The earliest understandings of how curve neurons are built from lines and edges came from Chris, and the details came from further investigation by Nick. Nick investigated the line families in detail, including finding cliff line neurons and studying they are used. Nick studied through neuron families in the early layers, studying how shape neurons incrementally incorporate increasingly sophisticated texture and cosmetic neurons, working towards the neuron families diagram in the first section. The artificial artificial neural network was done by Chris and Nick expanded on it for use in the article.</p>
+
+    <p><b>Writing.</b> Nick and Chris wrote the text of the article with significant help editing from Chelsea.</p>
+
+    <p><b>Infrastructure.</b> Nick built the infrastructure for extracting figures from the paper for reproduction in Colab. Ludwig is responsible for the distributed infrastructure that was used for many experiments.</p>
+
+    <h3>Acknowledgements</h3>
+
+    <p>Our article was greatly improved thanks to the detailed feedback by Jennifer Lin, Stefan Sietzen, Dave Vladman, Maxim Liu, Fred Hohman, Vincent Tjeng, and Humza Iqbal.</p>
+
+    <p>We also really appreciate the conversations in the #circuits channel of the open <a href="http://slack.distill.pub/">Distill Slack</a>, which at the time of publishing contains more than 600 people.</p>
+
   </d-appendix>
 
   <d-bibliography src="bibliography.bib"></d-bibliography>

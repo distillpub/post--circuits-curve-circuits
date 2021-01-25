@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node watch.js",
+    "dev": "node --max-old-space-size=8192 node_modules/webpack/bin/webpack.js --watch",
     "start": "next start",
     "build": "./node_modules/.bin/esbuild ./pages/index.js --bundle --loader:.js=jsx --loader:.png=file --loader:.jpg=file --define:process.env.NODE_ENV=\\\"production\\\" --outdir=public"
   },

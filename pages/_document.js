@@ -34,7 +34,7 @@ class MyDocument extends Document {
           affiliationURL: '',
         },
         {
-          author: 'Michael Petrov',
+          author: 'Chelsea Voss',
           authorURL: 'https://twitter.com/mpetrov',
           affiliation: 'OpenAI',
           affiliationURL: 'https://openai.com',

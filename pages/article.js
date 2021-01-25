@@ -1,3 +1,4 @@
+import React from 'react'
 import './init'
 import Neuron from 'components/neuron'
 import H2 from 'components/h2'
@@ -27,8 +28,6 @@ import AANNCircuit from 'pages/aann/circuit'
 import AANNWeights from 'pages/aann/weights'
 import Downstream from 'pages/downstream'
 
-import React from 'react'
-
 const layoutProps = {}
 const MDXLayout = React.Fragment
 export default function MDXContent({ components, ...props }) {
@@ -42,9 +41,25 @@ export default function MDXContent({ components, ...props }) {
       <Sidebar mdxType="Sidebar" />
       <div>
         <PrevNext mdxType="PrevNext" />
-        <p>{`Many approaches to interpretability give high level explanations, but it's hard to know if they're true. Circuits takes the opposite approach: building up from individual neurons and individual weights to easily verifiable explanations of tiny slices of neural networks. But it faces a different question: can we ever hope to understand a full neural network this way?`}</p>
         <p>
-          {`This paper uses the Circuits approach to reverse-engineer curve detectors, a neuron family we studied in a previous article. We find that although curve detection involves more than 50,000 parameters, they actually implement a simple algorithm that can be read off the weights and described in just a few English sentences. Based on this understanding, we re-implement curve detectors by hand, writing out weights to create an `}
+          {`Many approaches to interpretability give high level explanations, but it's hard to know if they're true. `}
+          <a
+            parentName="p"
+            {...{
+              href: 'https://distill.pub/2020/circuits/',
+            }}
+          >{`Circuits`}</a>
+          {` takes the opposite approach: building up from individual neurons and individual weights to easily verifiable explanations of tiny slices of neural networks. But it faces a different question: can we ever hope to understand a full neural network this way?`}
+        </p>
+        <p>
+          {`This paper uses the Circuits approach to reverse-engineer curve detectors, a neuron family we studied in a `}
+          <a
+            parentName="p"
+            {...{
+              href: 'https://distill.pub/2020/circuits/curve-detectors/',
+            }}
+          >{`previous article`}</a>
+          {`. We find that although curve detection involves more than 50,000 parameters, those parameters actually implement a simple algorithm that can be read off the weights and described in just a few English sentences. Based on this understanding, we re-implement curve detectors by hand, writing out weights to create an `}
           <em parentName="p">{`artificial`}</em>
           {` artificial neural network that mimics curve detectors.`}
         </p>
@@ -53,14 +68,23 @@ export default function MDXContent({ components, ...props }) {
           <a
             parentName="p"
             {...{
-              href: 'http://v',
+              href: 'https://distill.pub/2020/circuits/equivariance/',
             }}
           >{`equivariance motif`}</a>
           {`. Rotational equivariance reduces the complexity by a factor of 10-20x while scale equivariance reduces it by an additional 2-3x, for a total reduction of ~50x`}
           <d-footnote>{`A small portion involving the interactions of color-contrast detectors with line detectors is further reduced by a factor of ~8x due to hue equivariance, but doesn't significantly reduce the complexity of the overall circuit.`}</d-footnote>
           {`. We find this an exciting example of how motifs can dramatically simplify circuits. In this circuit the main motif is equivariance, but in others different motifs may be more important.`}
         </p>
-        <p>{`While the curve circuit in InceptionV1 is quaint next to the 175b weights in GPT-3, it's a big step up from the tiny circuits in Zoom In. We think the surprising simplicity of the curve circuit is a glimmer of hope that the Circuits approach may scale to letting us reverse-engineer big neural networks into small verifiable explanations.`}</p>
+        <p>
+          {`While the curve circuit in InceptionV1 is quaint next to the 175b weights in GPT-3, it's a big step up from the tiny circuits in `}
+          <a
+            parentName="p"
+            {...{
+              href: 'https://distill.pub/2020/circuits/zoom-in/',
+            }}
+          >{`Zoom In`}</a>
+          {`. We think the surprising simplicity of the curve circuit is a glimmer of hope that the Circuits approach may scale to letting us reverse-engineer big neural networks into small verifiable explanations.`}
+        </p>
       </div>
       <hr />
       <h2 id="overview">The Curve Detector Algorithm</h2>
@@ -74,7 +98,15 @@ export default function MDXContent({ components, ...props }) {
         >{`Curve Detectors`}</a>
         {` `}
         <d-cite bibtex-key="cammarata2020curve" />
-        {`, which reside in the fifth convolutional layer of InceptionV1. We’ll focus on one curve neuron, `}
+        {`, which reside in the `}
+        <a
+          parentName="p"
+          {...{
+            href:
+              'https://microscope.openai.com/models/inceptionv1/mixed3b_0?models.op.feature_vis.type=channel&models.op.technique=feature_vis',
+          }}
+        >{`fifth convolutional layer`}</a>
+        {` of InceptionV1. We’ll focus on one curve neuron, `}
         <a href="https://microscope.openai.com/models/inceptionv1/mixed3b_0/379">{`3b:379`}</a>
         {`, then show how they all follow a similar pattern.`}
       </p>
@@ -83,9 +115,9 @@ export default function MDXContent({ components, ...props }) {
       <p>
         {`To get a high level understanding of the first four layers in the context of curve detectors, we use a method we call `}
         <strong parentName="p">{`decomposed feature visualization`}</strong>
-        {`. Decomposed feature visualization renders a grid of feature visualization that shows the expanded weights of an upstream layer to a downstream neuron, in this case 3b:379`}
-        <d-footnote>{`Specifically, we calculate the gradient from each layer to the 3b curve family using a linear approximation of InceptionV1 where ReLUs are replaced with the identity. Then we use feature visualization with the objective of maximizing  the dot product between each image and each spatial position of the gradient.`}</d-footnote>
-        {`. Intuitively, this is like decomposing the curve into simpler shapes, with simpler shapes the further back we go, from early curves, to lines, and eventually Gabor Filters. Each shape is oriented along the tangent of the curve in 3b:379.`}
+        {`. Decomposed feature visualization renders a grid of feature visualization that shows the expanded weights of an upstream layer to a downstream neuron of interest (in this case 3b:379)`}
+        <d-footnote>{`Specifically, we calculate the gradient from each layer to the 3b curve family using a linear approximation of InceptionV1 where ReLUs are replaced with the identity. Then we use feature visualization with the objective of maximizing the dot product between each image and each spatial position of the gradient.`}</d-footnote>
+        {`. Intuitively, this is like decomposing the curve into simpler shapes, with simpler shapes the further back we go, from early curves, to lines, and eventually Gabor filters. Each shape is oriented along the tangent of the curve in 3b:379.`}
       </p>
 
       <Decomposed
@@ -123,7 +155,7 @@ export default function MDXContent({ components, ...props }) {
 
       <CircuitWeights mdxType="CircuitWeights" />
       <p>{`So far we’ve looked at the neuron families that are most important to curve detection, and also at the circuit motifs connecting them. This high-level “circuit schematic” is useful for seeing a complex algorithm at a glance, and it tells us the main components we'd need to build if we wanted to reimplement the circuit from scratch.`}</p>
-      <p>{`The circuit schematic also makes it easy to describe a few sentence English story of how curve detection works. Gabor Filters turn into proto-lines which build lines and early curves. Finally, lines and early curves are composed into curves. In each case, each shape family (eg conv2d2 line) has positive weight across the tangent of the shape family it builds (eg. 3a early curve). Each shape family implements the rotational equivariance motif, containing multiple rotated copies of approximately the same neuron.`}</p>
+      <p>{`The circuit schematic also makes it easy to describe a few sentence English story of how curve detection works. Gabor filters turn into proto-lines which build lines and early curves. Finally, lines and early curves are composed into curves. In each case, each shape family (eg conv2d2 line) has positive weight across the tangent of the shape family it builds (eg. 3a early curve). Each shape family implements the rotational equivariance motif, containing multiple rotated copies of approximately the same neuron.`}</p>
       <p>
         {`In the next few sections we'll zoom in from this high level description to a weight-level analysis of how each of the 3a families we've looked at so far contribute to curve detectors.`}
         <d-footnote>
@@ -263,7 +295,9 @@ export default function MDXContent({ components, ...props }) {
         <d-footnote>{`Or we could imagine a more sophisticated metric, such as style. Since ImageNet contains classes for sports cars and non-sports cars, there may be neurons that measure the “sportiness" of different cars. We think that studying neurons that correspond to cars is an interesting research direction, since it’s easy to accumulate datasets of cars with labelled properties such as year, country of origin, and price.`}</d-footnote>
         {` cars of a certain size, and has weaker activations to cars that are bigger or smaller than its ideal. But this line family provides a counter-example, accepting error on one side while not firing at all on the other.`}
       </p>
-      <h4>{`Lines in conv2d2`}</h4>
+      <h4>
+        <h4 id="lines-in-conv2d2">{`Lines in conv2d2`}</h4>
+      </h4>
       <p>{`The different types of line neurons we looked at above each have different behaviors, which is part of why the weight matrix between 3a lines and 3b curves is indecipherable. However, if we go back one more layer and look at how conv2d2 lines connect to 3b curves, we see structure.`}</p>
 
       <Conv2d2Weights mdxType="Conv2d2Weights" />
@@ -331,12 +365,12 @@ export default function MDXContent({ components, ...props }) {
         mdxType="AANNWeights"
       />
       <p>
-        {`Our final experiment to compare artificial curve neurons with natural curve neurons is to do artificial neuron surgery to replace InceptionV1's curve neurons with ours to see how they impact model performance. A preliminary experiment suggests that adding artificial curve detectors helps recover some of the loss across the dataset of removing them from the model entirely`}
+        {`Finally, a preliminary experiment suggests that adding artificial curve detectors helps recover some of the loss in classification accuracy across the dataset of removing them from the model entirely`}
         <d-footnote>
-          {`Specifically, when we remove InceptionV1’s 3b curve detectors entirely, the model’s top-5 accuracy across 2000 validation set images drops from 88.6% to 86.3%. When we replace 3b curve detectors with our artificial curve detectors more than half of this drop is recovered, with an accuracy of 87.6%. We suspect that tuning normalization or adding in color contrast detectors to our currently grayscale artificial curve neurons are low hanging fruit for reducing this gap. `}
+          {`Specifically, when we remove InceptionV1's 3b curve detectors entirely, the model's top-5 accuracy across 2000 validation set images drops from 88.6% to 86.3% (46 fewer correct classifications). When we replace 3b curve detectors with our artificial curve detectors more than half of this drop is recovered, with an accuracy of 87.6% (reducing the gap from 46 incorrect classifications to 20). We suspect the remaining gap is due to three factors. First, our artificial neurons are grayscale, since we are not implementing color contrast neurons or texture neurons. Secondly, the receptive fields of artificial neurons may be exactly centered the same as natural curve detectors. Thirdly, we may not have scaled the activations of curve detectors optimally.`}
           <br />
           <br />
-          {`There are two caveats worth mentioning. First, we're likely not mimicking the exact conditions the model was trained under, since it was trained at Google using a precursor to the Tensorflow library that no longer exists. Secondly, the reason we ran it on less than the full validation set was operational, not a result of cherry-picking. We initially ran it on a small set in a prototype experiment to validate our hypothesis. We planned to run it on the full set before our publication date, but due OpenAI infrastructure changes this was harder than expected and we were unable to. For this reason we emphasize that the experiment is preliminary, although we suspect it's likely to work on the full validation set as well.`}
+          {`Additionally, there are two caveats worth mentioning about our experimental setup. First, our ImageNet evaluation likely doesn't mimic the exact conditions the model was trained under (eg. data preprocessing), since the original model was trained at Google using a precursor Tensorflow. Secondly, the reason we ran it on less than the full validation set was operational, not a result of cherry-picking. We initially ran it on a small set in a prototype experiment to validate our hypothesis. We planned to run it on the full set before our publication date, but due OpenAI infrastructure changes our setup broke and we were unable to reimplement it in time. For this reason we emphasize that the experiment is preliminary, although we suspect it's likely to work on the full validation set as well.`}
         </d-footnote>
         {`.`}
       </p>

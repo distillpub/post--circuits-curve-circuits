@@ -17,16 +17,22 @@ const families = {
       name: 'Gabor Filters',
       icon: featureVis('InceptionV1', 'conv2d0', 49),
       percentage: 65,
+      href:
+        'https://distill.pub/2020/circuits/early-vision/#group_conv2d0_gabor_filters',
     },
     {
       name: 'Color Contrast',
       icon: featureVis('InceptionV1', 'conv2d0', 50),
       percentage: 21,
+      href:
+        'https://distill.pub/2020/circuits/early-vision/#group_conv2d0_color_contrast',
     },
     {
       name: 'Other Units',
       icon: featureVis('InceptionV1', 'conv2d0', 42),
       percentage: 14,
+      href:
+        'https://distill.pub/2020/circuits/early-vision/#group_conv2d0_other_units',
     },
   ],
   conv2d1: [

@@ -56,7 +56,7 @@ export default () => (
       We can compare the curve detectors in a neural network we hand-crafted
       with the curve detectors in InceptionV1 by measuring how they activate to
       synthetic curve stimuli. We see that across a range of radii and
-      orientations, our artificial curve neurons apprxoximate the natural ones.
+      orientations, our artificial curve neurons approximate the natural ones.
     </figcaption>
   </Figure>
 )

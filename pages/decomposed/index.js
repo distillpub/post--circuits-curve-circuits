@@ -65,7 +65,7 @@ export default cofab((data) => (
               paddingLeft={3}
               marginBottom={10}
             >
-              {name}
+              {name === '3a' ? 'mixed3a' : name}
             </Text>
             <Surface height={90}>
               <figcaption>{caption}</figcaption>
@@ -80,9 +80,13 @@ export default cofab((data) => (
         To increase legibility, we render each feature visualization with alpha
         transparency and grayscale. Since curve detectors are invariant to
         color, the vibrant colors feature visualization produces don't give us
-        much information, and they can be distracting. To give us a sense of the
-        strength of each position we set the opacity relative to its magnitude.
-        We see the highest magnitude weights follow the tangent of 3b:379.
+        much information, and they can be distracting. Instead we visualize{' '}
+        <a href="https://distill.pub/2020/circuits/curve-detectors/#visualizing-attribution">
+          attribution
+        </a>
+        . To give us a sense of the strength of each position we set the opacity
+        relative to its magnitude. We see the highest magnitude weights follow
+        the tangent of 3b:379.
       </figcaption>
     </Surface>
   </Figure>

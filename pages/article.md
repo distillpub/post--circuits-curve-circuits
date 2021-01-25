@@ -214,7 +214,7 @@ While we won't do a detailed weight-level analysis of how cosmetic robustness pr
 
 <h2 id="artificial-artificial-neural-network">An Artificial Artificial Neural Network</h2>
 
-How do we know this story about the mechanics of curve detectors is true? One way is to use it to reimplement curve detectors from scratch. We manually set the weights of a blank neural network to implement the neuron families and circuit motifs from this article, crafting an artificial_ _neural network, and made the python code available and runnable in this Colab notebook. We did not look at the original neural network’s weights when constructing it, which would go against the spirit of the exercise.
+How do we know this story about the mechanics of curve detectors is true? One way is to use it to reimplement curve detectors from scratch. We manually set the weights of a blank neural network to implement the neuron families and circuit motifs from this article, crafting an _artificial_ artificial neural network, and made the python code available and runnable in this Colab notebook. We did not look at the original neural network’s weights when constructing it, which would go against the spirit of the exercise.
 
 To compare our artificial curve detectors against InceptionV1's naturally learned ones we have the full palette of techniques we used in [Curve Detectors](https://distill.pub/2020/circuits/curve-detectors/) available to us. We'll choose three: feature visualization, dataset examples, and synthetic stimuli. From there we'll run two additional comparisons by leveraging circuits and model editing.
 

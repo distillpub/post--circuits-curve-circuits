@@ -4,25 +4,15 @@ import { Surface } from 'components/ui'
 import { featureVis } from 'components/helpers'
 import Tiles from 'components/tiles'
 import { scaleLinear } from 'd3-scale'
-import fetchGradients from 'components/fetchGradients'
+import { includes } from 'lodash'
+import weights from './weights'
+// import fetchGradients from 'components/fetchGradients'
 
 class LineTiles extends React.Component {
-  state = { weights: null }
-  componentDidMount() {
-    fetchGradients('inceptionv1', 'conv2d2', 'mixed3b').then((weights) => {
-      this.setState({ weights })
-    })
-  }
-
   render() {
     const { size = 60, upstream, neurons, noBorder } = this.props
     const { upstreamLayer = 'conv2d2', layer = 'mixed3b' } = this.props
-    const { weights } = this.state
     const scale = scaleLinear().domain([0, 38])
-
-    if (!weights) {
-      return <div>loading</div>
-    }
 
     // curves
     // const upstream = [189, 81, 104, 92, 145, 95, 171, 71, 147]
@@ -71,7 +61,7 @@ class LineTiles extends React.Component {
             {upstream.map((upstreamNeuron) => (
               <Tiles
                 size={size}
-                grad={weights[upstreamNeuron][neuron]}
+                grad={weights[`${upstreamNeuron}-${neuron}`]}
                 hasBorder={false}
                 scale={scale}
               />

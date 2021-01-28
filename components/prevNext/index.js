@@ -20,8 +20,8 @@ export default () => (
       an experimental format collecting invited short articles and critical
       commentary delving into the inner workings of neural networks.
     </p>
-    <a className="prev" href="/2020/circuits/equivariance/">
-      Naturally Occurring Equivariance in Neural Networks
+    <a className="prev" href="/2020/circuits/frequency-edges/">
+      High-Low Frequency Detectors
     </a>
   </section>
 )

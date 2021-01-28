@@ -1,6 +1,6 @@
-import React from 'react'
 import './init'
 import Neuron from 'components/neuron'
+import React from 'react'
 import H2 from 'components/h2'
 import H3 from 'components/h3'
 import Sidebar from 'pages/sidebar'
@@ -293,7 +293,7 @@ export default function MDXContent({ components, ...props }) {
       <p>
         {`We find cliff-like line neurons an interesting example of non-linear behavior. We usually think of neurons as measuring distance from some ideal. For instance, we may expect car neurons to prefer `}
         <d-footnote>{`Or we could imagine a more sophisticated metric, such as style. Since ImageNet contains classes for sports cars and non-sports cars, there may be neurons that measure the “sportiness" of different cars. We think that studying neurons that correspond to cars is an interesting research direction, since it’s easy to accumulate datasets of cars with labelled properties such as year, country of origin, and price.`}</d-footnote>
-        {` cars of a certain size, and has weaker activations to cars that are bigger or smaller than its ideal. But this line family provides a counter-example, accepting error on one side while not firing at all on the other.`}
+        {` cars of a certain size, and have weaker activations to cars that are bigger or smaller than its ideal. But this line family provides a counter-example, accepting error on one side while not firing at all on the other.`}
       </p>
       <h4>
         <h4 id="lines-in-conv2d2">{`Lines in conv2d2`}</h4>
@@ -327,7 +327,13 @@ export default function MDXContent({ components, ...props }) {
       <h2 id="artificial-artificial-neural-network">
         An Artificial Artificial Neural Network
       </h2>
-      <p>{`How do we know this story about the mechanics of curve detectors is true? One way is to use it to reimplement curve detectors from scratch. We manually set the weights of a blank neural network to implement the neuron families and circuit motifs from this article, crafting an artificial_ _neural network, and made the python code available and runnable in this Colab notebook. We did not look at the original neural network’s weights when constructing it, which would go against the spirit of the exercise.`}</p>
+      <p>
+        {`How do we know this story about the mechanics of curve detectors is true? One way is to use it to reimplement curve detectors from scratch. We manually set the weights of a blank neural network to implement the neuron families and circuit motifs from this article, crafting an `}
+        <i>{`artificial`}</i>
+        {` artificial neural network, and made the python code available and runnable in `}
+        <a href="https://colab.research.google.com/drive/1WIazW0e7I-ZOFqTWzUUN7wWtetXrbwCA">{`this Colab notebook`}</a>
+        {`. This was initially a few hour process for one person (Chris Olah), and they did not look at the original neural network’s weights when constructing it, which would go against the spirit of the exercise. Later, before publishing they tweaked the weights and in particular added negative weights to remove echoes in the activations.`}
+      </p>
       <p>
         {`To compare our artificial curve detectors against InceptionV1's naturally learned ones we have the full palette of techniques we used in `}
         <a
@@ -367,7 +373,7 @@ export default function MDXContent({ components, ...props }) {
       <p>
         {`Finally, a preliminary experiment suggests that adding artificial curve detectors helps recover some of the loss in classification accuracy across the dataset of removing them from the model entirely`}
         <d-footnote>
-          {`Specifically, when we remove InceptionV1's 3b curve detectors entirely, the model's top-5 accuracy across 2000 validation set images drops from 88.6% to 86.3% (46 fewer correct classifications). When we replace 3b curve detectors with our artificial curve detectors more than half of this drop is recovered, with an accuracy of 87.6% (reducing the gap from 46 incorrect classifications to 20). We suspect the remaining gap is due to three factors. First, our artificial neurons are grayscale, since we are not implementing color contrast neurons or texture neurons. Secondly, the receptive fields of artificial neurons may be exactly centered the same as natural curve detectors. Thirdly, we may not have scaled the activations of curve detectors optimally.`}
+          {`Specifically, when we remove InceptionV1's 3b curve detectors entirely, the model's top-5 accuracy across 2000 validation set images drops from 88.6% to 86.3% (46 fewer correct classifications). When we replace 3b curve detectors with our artificial curve detectors more than half of this drop is recovered, with an accuracy of 87.6% (reducing the gap from 46 incorrect classifications to 20). We suspect the remaining gap is due to three factors. First, our artificial neurons are grayscale, since we are not implementing color contrast neurons or texture neurons. Secondly, the receptive fields of artificial neurons may not be exactly centered the same as natural curve detectors. Thirdly, we may not have scaled the activations of curve detectors optimally.`}
           <br />
           <br />
           {`Additionally, there are two caveats worth mentioning about our experimental setup. First, our ImageNet evaluation likely doesn't mimic the exact conditions the model was trained under (eg. data preprocessing), since the original model was trained at Google using a precursor Tensorflow. Secondly, the reason we ran it on less than the full validation set was operational, not a result of cherry-picking. We initially ran it on a small set in a prototype experiment to validate our hypothesis. We planned to run it on the full set before our publication date, but due OpenAI infrastructure changes our setup broke and we were unable to reimplement it in time. For this reason we emphasize that the experiment is preliminary, although we suspect it's likely to work on the full validation set as well.`}

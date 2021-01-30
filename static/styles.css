@@ -100,7 +100,7 @@ d-contents nav > ul > li > a:hover {
 }
 
 d-title {
-  padding: 0px !important;
+  padding-bottom: 0px !important;
 }
 
 #thread-nav {

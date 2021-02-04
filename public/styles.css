@@ -107,7 +107,7 @@ d-title {
   margin-top: 20;
   margin-bottom: 1.5rem;
   display: grid;
-  grid-template-columns: 45px 5fr 1fr;
+  grid-template-columns: 45px 4fr 2fr;
   grid-template-areas:
     'icon explanation explanation '
     'icon prev next';
@@ -116,7 +116,7 @@ d-title {
 
 @media (min-width: 768px) {
   #thread-nav {
-    grid-template-columns: 65px 5fr 1fr;
+    grid-template-columns: 65px 4fr 2fr;
   }
 }
 
